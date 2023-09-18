@@ -26,7 +26,7 @@
 
 .search-bar:focus {
   outline: none;
-  border: 0.2rem solid #1db954;
+  border: 0.2rem solid #c94c09;
 }
 
 .search-bar::placeholder {
@@ -42,7 +42,7 @@
   height: 5rem;
   border: none;
   border-radius: 1rem;
-  background-color: #1db954;
+  background-color: #c94c09;
   color: #fff;
   cursor: pointer;
   margin-top: 2rem;
@@ -53,5 +53,5 @@
 }
 
 .search-bar__btn:hover {
-  background-color: #13883c;
+  background-color: #9e3e0b;
 }
