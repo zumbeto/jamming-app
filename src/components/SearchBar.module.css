@@ -19,11 +19,27 @@
 }
 
 .search {
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.search-clear-icon {
+  position: absolute;
+  right: 1.2rem;
+  top: 1.7rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  color: #a1a1a1;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.search-clear-icon:hover {
+  transform: scale(1.2);
 }
 
 .search-bar {

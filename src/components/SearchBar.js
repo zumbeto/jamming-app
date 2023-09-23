@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import SearchBarToast from './SearchBarToast';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import styles from './SearchBar.module.css';
+import { library } from '@fortawesome/fontawesome-svg-core';
+
+library.add(faTimes);
 
 const SearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState('');
@@ -41,6 +46,13 @@ const SearchBar = ({ onSearch }) => {
           value={query}
           onChange={handleChange}
         />
+        {query && (
+          <FontAwesomeIcon
+            icon='times'
+            className={styles['search-clear-icon']}
+            onClick={() => setQuery('')}
+          />
+        )}
         <button
           className={styles['search-bar__btn']}
           type='submit'

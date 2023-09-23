@@ -1,10 +1,10 @@
 import './Playlist.module.css';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPlus, faMinus, faMusic } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './Playlist.module.css';
 
-library.add(faPlus, faMinus, faMusic);
+library.add(faPlus, faMinus, faTimes);
 
 const Playlist = ({ activeView, name, tracks, onNameChange, onRemove, onSave, onClear }) => {
   return (
@@ -20,6 +20,13 @@ const Playlist = ({ activeView, name, tracks, onNameChange, onRemove, onSave, on
           onChange={(e) => onNameChange(e.target.value)}
           className={styles['playlist__input__text']}
         />
+        {name && (
+          <FontAwesomeIcon
+            icon='times'
+            className={styles['playlist-clear-icon']}
+            onClick={() => onNameChange('')}
+          />
+        )}
       </div>
       {tracks.map((track) => (
         <li

@@ -37,12 +37,28 @@
 }
 
 .playlist__input {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   padding: 2rem;
   border-bottom: 1px solid rgba(201, 76, 9, 0.4);
+}
+
+.playlist-clear-icon {
+  position: absolute;
+  right: 2.8rem;
+  top: 3.15rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  color: #a1a1a1;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.playlist-clear-icon:hover {
+  transform: scale(1.2);
 }
 
 .playlist__input__text {
