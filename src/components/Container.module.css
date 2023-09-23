@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 0 auto;
+  max-width: 140rem;
+  padding: 0 1rem;
+}
+
+@media screen and (min-width: 768px) {
+  .container {
+    padding: 0 2rem;
+  }
+}
