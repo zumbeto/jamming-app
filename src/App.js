@@ -7,40 +7,71 @@ import Playlist from './components/Playlist';
 import MobileNav from './components/MobileNav';
 
 function App() {
+  // State variables to manage app's data and view
   const [activeView, setActiveView] = useState('results');
   const [accessToken, setAccessToken] = useState('');
   const [tracks, setTracks] = useState([]);
   const [playlistName, setPlaylistName] = useState('New Playlist');
   const [playlistTracks, setPlaylistTracks] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      const token = await getAccessToken();
-      setAccessToken(token);
-    };
+  // Spotify API configurations
+  const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
+  const REDIRECT_URI = 'http://localhost:3000';
+  const SCOPES = 'user-read-private user-read-email playlist-modify-private playlist-modify-public';
 
-    fetchToken();
-  }, []);
+  // Construct authorization URL for Spotify
+  const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=token&scope=${encodeURIComponent(
+    SCOPES
+  )}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
 
-  const getAccessToken = async () => {
-    const clientId = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-    const clientSecret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
-    const credentials = btoa(`${clientId}:${clientSecret}`);
-
-    const response = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${credentials}`,
-      },
-      body: 'grant_type=client_credentials',
-    });
-
-    const data = await response.json();
-
-    return data.access_token;
+  // Function to parse the access token from the URL
+  const getTokenFromUrl = () => {
+    return window.location.hash
+      .substring(1)
+      .split('&')
+      .reduce((initial, item) => {
+        var parts = item.split('=');
+        initial[parts[0]] = decodeURIComponent(parts[1]);
+        return initial;
+      }, {});
   };
 
+  // Effect hook to handle Spotify authentication and token retrieval
+  useEffect(() => {
+    const hash = getTokenFromUrl();
+    const token = hash.access_token;
+    const expiresIn = hash.expires_in;
+
+    if (token) {
+      // Token found in the URL
+      // Calculate token expiration time
+      const expirationTime = new Date().getTime() + expiresIn * 1000;
+
+      // Store token and its expiration time in local storage
+      localStorage.setItem('spotifyAccessToken', token);
+      localStorage.setItem('spotifyTokenExpirationTime', expirationTime.toString());
+
+      setAccessToken(token);
+      setIsAuthenticated(true);
+    } else {
+      const localToken = localStorage.getItem('spotifyAccessToken');
+      const tokenExpirationTime = localStorage.getItem('spotifyTokenExpirationTime');
+
+      if (localToken && tokenExpirationTime && new Date().getTime() < Number(tokenExpirationTime)) {
+        // Token is valid and not expired, set it to the state
+        setAccessToken(localToken);
+        setIsAuthenticated(true);
+      } else if (!isAuthenticated) {
+        // No valid token found, redirect to Spotify for authentication
+        localStorage.removeItem('spotifyAccessToken');
+        localStorage.removeItem('spotifyTokenExpirationTime');
+        window.location = AUTH_URL;
+      }
+    }
+  }, [isAuthenticated, AUTH_URL]);
+
+  // Function to handle track search
   const handleSearch = async (query) => {
     if (!accessToken) return;
 
@@ -48,6 +79,7 @@ function App() {
     setTracks(results);
   };
 
+  // Function to request Spotify API for track search
   const searchTracks = async (query, token) => {
     const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=20`, {
       headers: {
@@ -59,16 +91,19 @@ function App() {
     return data.tracks.items;
   };
 
+  // Function to add a track to the playlist
   const addToPlaylist = (track) => {
     if (!playlistTracks.find((savedTrack) => savedTrack.id === track.id)) {
       setPlaylistTracks([...playlistTracks, track]);
     }
   };
 
+  // Function to remove a track from the playlist
   const removeFromPlaylist = (track) => {
     setPlaylistTracks(playlistTracks.filter((savedTrack) => savedTrack.id !== track.id));
   };
 
+  // Function to update the name of the playlist
   const updatePlaylistName = (name) => {
     setPlaylistName(name);
   };
