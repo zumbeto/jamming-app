@@ -15,8 +15,8 @@ function App() {
   const [playlistName, setPlaylistName] = useState('New Playlist');
   const [playlistTracks, setPlaylistTracks] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [showToast, setShowToast] = useState(false);
+  const [playlistToastMessage, setPlaylistToastMessage] = useState('');
+  const [showPlaylistToast, setShowPlaylistToast] = useState(false);
 
   // Spotify API configurations
   const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
@@ -120,9 +120,9 @@ function App() {
   // Function to save the playlist to Spotify
   const savePlaylistToSpotify = async () => {
     if (!playlistName || playlistTracks.length === 0) {
-      setToastMessage('Ensure you have a playlist name and tracks to save!');
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
+      setPlaylistToastMessage('Ensure you have a playlist name and tracks to save!');
+      setShowPlaylistToast(true);
+      setTimeout(() => setShowPlaylistToast(false), 3000);
       return;
     }
 
@@ -131,18 +131,18 @@ function App() {
       const playlistId = await createPlaylist(userId, playlistName, accessToken);
       const trackURIs = playlistTracks.map((track) => track.uri);
       await addTracksToPlaylist(userId, playlistId, trackURIs, accessToken);
-      setToastMessage('Playlist saved to Spotify successfully!');
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
+      setPlaylistToastMessage('Playlist saved to Spotify successfully!');
+      setShowPlaylistToast(true);
+      setTimeout(() => setShowPlaylistToast(false), 3000);
 
       // Reset the playlist name and tracks in the state
       setPlaylistName('New Playlist');
       setPlaylistTracks([]);
     } catch (error) {
       console.error('Error saving playlist to Spotify:', error);
-      setToastMessage('Error saving playlist to Spotify. Please try again.');
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
+      setPlaylistToastMessage('Error saving playlist to Spotify. Please try again.');
+      setShowPlaylistToast(true);
+      setTimeout(() => setShowPlaylistToast(false), 3000);
     }
   };
 
@@ -215,8 +215,8 @@ function App() {
       <MobileNav setActiveView={setActiveView} />
       <Container>
         <PlaylistToast
-          message={toastMessage}
-          isVisible={showToast}
+          message={playlistToastMessage}
+          isVisible={showPlaylistToast}
         />
         <SearchResults
           activeView={activeView}

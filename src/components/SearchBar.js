@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import SearchBarToast from './SearchBarToast';
 import styles from './SearchBar.module.css';
 
 const SearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState('');
   const [isValid, setIsValid] = useState(false);
+  const [searchBarToastMessage, setSearchBarToastMessage] = useState('');
+  const [showSearchBarToast, setShowSearchBarToast] = useState(false);
 
   const handleChange = (e) => {
     const { value } = e.target;
@@ -15,6 +18,13 @@ const SearchBar = ({ onSearch }) => {
     e.preventDefault();
     if (isValid && onSearch) {
       onSearch(query);
+    } else {
+      setSearchBarToastMessage('Please enter a search query.');
+      setShowSearchBarToast(true);
+
+      setTimeout(() => {
+        setShowSearchBarToast(false);
+      }, 3000);
     }
   };
 
@@ -33,12 +43,15 @@ const SearchBar = ({ onSearch }) => {
         />
         <button
           className={styles['search-bar__btn']}
-          disabled={!isValid}
           type='submit'
         >
           Search
         </button>
       </form>
+      <SearchBarToast
+        message={searchBarToastMessage}
+        isVisible={showSearchBarToast}
+      />
     </div>
   );
 };
