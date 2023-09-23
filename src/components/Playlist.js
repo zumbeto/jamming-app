@@ -6,123 +6,45 @@ import styles from './Playlist.module.css';
 
 library.add(faPlus, faMinus, faMusic);
 
-const Playlist = ({ activeView }) => {
+const Playlist = ({ activeView, name, tracks, onNameChange, onRemove }) => {
   return (
     <ul
       className={styles['playlist']}
       data-active-view={activeView}
     >
-      <h1 className={styles['playlist__heading']}>Playlist</h1>
+      <h1 className={styles['playlist__heading']}>{name}</h1>
       <div className={styles['playlist__input']}>
         <input
           type='text'
-          placeholder='New playlist'
+          value={name}
+          onChange={(e) => onNameChange(e.target.value)}
           className={styles['playlist__input__text']}
         />
       </div>
-      <li className={styles['playlist__item']}>
-        <div className={styles['playlist__album-cover']}>
-          <img
-            src='./no-image.png'
-            className={styles['playlist__album-cover__img']}
-            alt='Album cover'
-          ></img>
-        </div>
-        <div className={styles['playlist__data']}>
-          <h2 className={styles['playlist__title']}>2Pac</h2>
-          <p className={styles['playlist__description']}>Hit Em Up</p>
-        </div>
-        <FontAwesomeIcon
-          icon='minus'
-          className={styles['playlist__icon']}
-        />
-      </li>
-      <li className={styles['playlist__item']}>
-        <div className={styles['playlist__album-cover']}>
-          <img
-            src='./no-image.png'
-            className={styles['playlist__album-cover__img']}
-            alt='Album cover'
-          ></img>
-        </div>
-        <div className={styles['playlist__data']}>
-          <h2 className={styles['playlist__title']}>2Pac</h2>
-          <p className={styles['playlist__description']}>Hit Em Up</p>
-        </div>
-        <FontAwesomeIcon
-          icon='minus'
-          className={styles['playlist__icon']}
-        />
-      </li>
-      <li className={styles['playlist__item']}>
-        <div className={styles['playlist__album-cover']}>
-          <img
-            src='./no-image.png'
-            className={styles['playlist__album-cover__img']}
-            alt='Album cover'
-          ></img>
-        </div>
-        <div className={styles['playlist__data']}>
-          <h2 className={styles['playlist__title']}>2Pac</h2>
-          <p className={styles['playlist__description']}>Hit Em Up</p>
-        </div>
-        <FontAwesomeIcon
-          icon='minus'
-          className={styles['playlist__icon']}
-        />
-      </li>
-      <li className={styles['playlist__item']}>
-        <div className={styles['playlist__album-cover']}>
-          <img
-            src='./no-image.png'
-            className={styles['playlist__album-cover__img']}
-            alt='Album cover'
-          ></img>
-        </div>
-        <div className={styles['playlist__data']}>
-          <h2 className={styles['playlist__title']}>2Pac</h2>
-          <p className={styles['playlist__description']}>Hit Em Up</p>
-        </div>
-        <FontAwesomeIcon
-          icon='minus'
-          className={styles['playlist__icon']}
-        />
-      </li>
-      <li className={styles['playlist__item']}>
-        <div className={styles['playlist__album-cover']}>
-          <img
-            src='./no-image.png'
-            className={styles['playlist__album-cover__img']}
-            alt='Album cover'
-          ></img>
-        </div>
-        <div className={styles['playlist__data']}>
-          <h2 className={styles['playlist__title']}>2Pac</h2>
-          <p className={styles['playlist__description']}>Hit Em Up</p>
-        </div>
-        <FontAwesomeIcon
-          icon='minus'
-          className={styles['playlist__icon']}
-        />
-      </li>
-      <li className={styles['playlist__item']}>
-        <div className={styles['playlist__album-cover']}>
-          <img
-            src='./no-image.png'
-            className={styles['playlist__album-cover__img']}
-            alt='Album cover'
-          ></img>
-        </div>
-        <div className={styles['playlist__data']}>
-          <h2 className={styles['playlist__title']}>2Pac</h2>
-          <p className={styles['playlist__description']}>Hit Em Up</p>
-        </div>
-        <FontAwesomeIcon
-          icon='minus'
-          className={styles['playlist__icon']}
-        />
-      </li>
-      <button className={styles['playlist__button']}>Create</button>
+      {tracks.map((track) => (
+        <li
+          key={track.id}
+          className={styles['playlist__item']}
+        >
+          <div className={styles['playlist__album-cover']}>
+            <img
+              src={track.album.images[0]?.url || './no-image.png'}
+              className={styles['playlist__album-cover__img']}
+              alt='Album cover'
+            />
+          </div>
+          <div className={styles['playlist__data']}>
+            <h2 className={styles['playlist__title']}>{track.name}</h2>
+            <p className={styles['playlist__description']}>{track.artists[0].name}</p>
+          </div>
+          <FontAwesomeIcon
+            icon='minus'
+            className={styles['playlist__icon']}
+            onClick={() => onRemove(track)}
+          />
+        </li>
+      ))}
+      <button className={styles['playlist__button']}>Save to Spotify</button>
     </ul>
   );
 };
