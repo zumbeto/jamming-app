@@ -222,6 +222,7 @@ function App() {
           activeView={activeView}
           tracks={tracks}
           onAdd={addToPlaylist}
+          playlistTracks={playlistTracks}
         />
         <Playlist
           activeView={activeView}

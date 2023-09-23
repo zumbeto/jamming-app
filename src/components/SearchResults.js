@@ -1,12 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlus, faMinus, faMusic } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AddedTrackToast from './AddedTrackToast';
 import styles from './SearchResults.module.css';
 
 library.add(faPlus, faMinus, faMusic);
 
-const SearchResults = ({ activeView, tracks, onAdd }) => {
+const SearchResults = ({ activeView, tracks, onAdd, playlistTracks }) => {
+  const [addedTrackToastStatus, setAddedTrackToastStatus] = useState({});
+
+  // Function to add a track to the playlist and show a toast message
+  const handleAddTrack = (track) => {
+    // Check if track is already in the playlist
+    if (playlistTracks.find((savedTrack) => savedTrack.id === track.id)) {
+      setAddedTrackToastStatus((prevState) => ({
+        ...prevState,
+        [track.id]: { isVisible: true, message: 'Track already in your playlist!' },
+      }));
+    } else {
+      onAdd(track);
+      setAddedTrackToastStatus((prevState) => ({
+        ...prevState,
+        [track.id]: { isVisible: true, message: 'Added to your playlist!' },
+      }));
+    }
+
+    setTimeout(() => {
+      setAddedTrackToastStatus((prevState) => ({
+        ...prevState,
+        [track.id]: { ...prevState[track.id], isVisible: false },
+      }));
+    }, 1500);
+  };
+
   return (
     <ul
       className={styles['results']}
@@ -32,7 +59,11 @@ const SearchResults = ({ activeView, tracks, onAdd }) => {
           <FontAwesomeIcon
             icon='plus'
             className={styles['results__icon']}
-            onClick={() => onAdd(track)}
+            onClick={() => handleAddTrack(track)}
+          />
+          <AddedTrackToast
+            message={addedTrackToastStatus[track.id]?.message || ''}
+            isVisible={!!addedTrackToastStatus[track.id]?.isVisible}
           />
         </li>
       ))}
