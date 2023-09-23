@@ -144,6 +144,11 @@
   width: 1em;
   height: 1em;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.playlist__icon:hover {
+  transform: scale(1.5);
 }
 
 @media (min-width: 768px) {
@@ -152,9 +157,24 @@
   }
 }
 
+.playlist__buttons {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+}
+
+@media screen and (min-width: 768px) {
+  .playlist__buttons {
+    display: flex;
+    gap: 2rem;
+  }
+}
+
 .playlist__button {
-  width: 15rem;
-  height: 5rem;
+  width: 13rem;
+  height: 4rem;
   border: none;
   border-radius: 5rem;
   background-color: #c94c09;

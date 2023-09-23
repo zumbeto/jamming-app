@@ -6,7 +6,7 @@ import styles from './Playlist.module.css';
 
 library.add(faPlus, faMinus, faMusic);
 
-const Playlist = ({ activeView, name, tracks, onNameChange, onRemove, onSave }) => {
+const Playlist = ({ activeView, name, tracks, onNameChange, onRemove, onSave, onClear }) => {
   return (
     <ul
       className={styles['playlist']}
@@ -44,12 +44,20 @@ const Playlist = ({ activeView, name, tracks, onNameChange, onRemove, onSave }) 
           />
         </li>
       ))}
-      <button
-        className={styles['playlist__button']}
-        onClick={onSave}
-      >
-        Save to Spotify
-      </button>
+      <div className={styles['playlist__buttons']}>
+        <button
+          className={styles['playlist__button']}
+          onClick={onSave}
+        >
+          Save to Spotify
+        </button>
+        <button
+          className={styles['playlist__button']}
+          onClick={onClear}
+        >
+          Clear Playlist
+        </button>
+      </div>
     </ul>
   );
 };

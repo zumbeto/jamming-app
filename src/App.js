@@ -103,6 +103,11 @@ function App() {
     return data.id;
   };
 
+  // Function to clear the playlist
+  const clearPlaylist = () => {
+    setPlaylistTracks([]);
+  };
+
   // Function to add tracks to a playlist on Spotify
   const addTracksToPlaylist = async (userId, playlistId, trackURIs, token) => {
     await fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`, {
@@ -231,6 +236,7 @@ function App() {
           onRemove={removeFromPlaylist}
           onNameChange={updatePlaylistName}
           onSave={savePlaylistToSpotify}
+          onClear={clearPlaylist}
         />
       </Container>
     </div>
