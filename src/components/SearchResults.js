@@ -6,7 +6,7 @@ import styles from './SearchResults.module.css';
 
 library.add(faPlus, faMinus, faMusic);
 
-const SearchResults = ({ activeView, tracks }) => {
+const SearchResults = ({ activeView, tracks, onAdd }) => {
   return (
     <ul
       className={styles['results']}
@@ -32,6 +32,7 @@ const SearchResults = ({ activeView, tracks }) => {
           <FontAwesomeIcon
             icon='plus'
             className={styles['results__icon']}
+            onClick={() => onAdd(track)}
           />
         </li>
       ))}
