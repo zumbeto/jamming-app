@@ -17,7 +17,7 @@ function App() {
 
   // Spotify API configurations
   const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-  const REDIRECT_URI = 'http://localhost:3000';
+  const REDIRECT_URI = process.env.REACT_APP_SPOTIFY_REDIRECT_URI;
   const SCOPES = 'user-read-private user-read-email playlist-modify-private playlist-modify-public';
   const TOKEN_RENEWAL_BUFFER = 5 * 60 * 1000;
 
