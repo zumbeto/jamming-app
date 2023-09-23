@@ -1,5 +1,9 @@
 # The Ja<span style="color:red">mmm</span>ing App
 
+![previews](public/app-previews.png)
+
+---
+
 ## Table of Contents
 
 - [General Info](#general-info)
@@ -17,7 +21,9 @@ The Ja<span style="color:red">mmm</span>ing App is an intuitive web application 
 
 ## Live Version
 
-The live version of the application can be accessed here: [Jammming App](#)
+The live version of the application can be accessed here: [Jammming App](https://jammming-playlist-creator.netlify.app).
+
+Note: You will need to log in to your Spotify account.
 
 ## Technologies
 
