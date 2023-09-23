@@ -105,6 +105,7 @@
   font-size: inherit;
   width: 1em;
   height: 1em;
+  cursor: pointer;
 }
 
 @media (min-width: 768px) {

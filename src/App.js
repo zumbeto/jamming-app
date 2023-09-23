@@ -10,6 +10,8 @@ function App() {
   const [activeView, setActiveView] = useState('results');
   const [accessToken, setAccessToken] = useState('');
   const [tracks, setTracks] = useState([]);
+  const [playlistName, setPlaylistName] = useState('New Playlist');
+  const [playlistTracks, setPlaylistTracks] = useState([]);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -57,6 +59,20 @@ function App() {
     return data.tracks.items;
   };
 
+  const addToPlaylist = (track) => {
+    if (!playlistTracks.find((savedTrack) => savedTrack.id === track.id)) {
+      setPlaylistTracks([...playlistTracks, track]);
+    }
+  };
+
+  const removeFromPlaylist = (track) => {
+    setPlaylistTracks(playlistTracks.filter((savedTrack) => savedTrack.id !== track.id));
+  };
+
+  const updatePlaylistName = (name) => {
+    setPlaylistName(name);
+  };
+
   return (
     <div className='App'>
       <LogoBar />
@@ -66,8 +82,15 @@ function App() {
         <SearchResults
           activeView={activeView}
           tracks={tracks}
+          onAdd={addToPlaylist}
         />
-        <Playlist activeView={activeView} />
+        <Playlist
+          activeView={activeView}
+          name={playlistName}
+          tracks={playlistTracks}
+          onRemove={removeFromPlaylist}
+          onNameChange={updatePlaylistName}
+        />
       </Container>
     </div>
   );

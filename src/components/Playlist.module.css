@@ -143,6 +143,7 @@
   font-size: inherit;
   width: 1em;
   height: 1em;
+  cursor: pointer;
 }
 
 @media (min-width: 768px) {
@@ -152,8 +153,8 @@
 }
 
 .playlist__button {
-  width: 15rem;
-  height: 5rem;
+  width: 17rem;
+  height: 6rem;
   border: none;
   border-radius: 5rem;
   background-color: #c94c09;
