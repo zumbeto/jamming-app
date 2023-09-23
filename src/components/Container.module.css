@@ -7,11 +7,11 @@
   align-items: flex-start;
   margin: 0 auto;
   max-width: 140rem;
-  padding: 0 1rem;
+  padding: 0 1rem 7rem 1rem;
 }
 
 @media screen and (min-width: 768px) {
   .container {
-    padding: 0 2rem;
+    padding: 0 2rem 7rem 2rem;
   }
 }

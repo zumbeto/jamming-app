@@ -1,4 +1,5 @@
 .playlist {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -174,6 +175,7 @@
 }
 
 .playlist__buttons {
+  position: relative;
   display: flex;
   justify-content: space-between;
   flex-direction: row;

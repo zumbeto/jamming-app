@@ -9,19 +9,17 @@ library.add(faTimes);
 
 const SearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState('');
-  const [isValid, setIsValid] = useState(false);
   const [searchBarToastMessage, setSearchBarToastMessage] = useState('');
   const [showSearchBarToast, setShowSearchBarToast] = useState(false);
 
   const handleChange = (e) => {
     const { value } = e.target;
     setQuery(value);
-    setIsValid(value.length > 0);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (isValid && onSearch) {
+    if (query.trim() && onSearch) {
       onSearch(query);
     } else {
       setSearchBarToastMessage('Please enter a search query.');

@@ -1,8 +1,7 @@
 .toast {
   position: absolute;
-  top: 23rem;
-  left: 50%;
-  transform: translate(-50%, 100%);
+  bottom: -7rem;
+  transform: translateY(100%);
   background-color: #290145;
   color: white;
   padding: 1rem 2rem;
@@ -18,15 +17,14 @@
 }
 
 .toast.show {
-  transform: translate(-50%, 0);
+  transform: translateY(0);
   opacity: 1;
 }
 
 @media screen and (min-width: 768px) {
   .toast {
-    top: 28rem;
-    left: 79%;
-    transform: translate(-50%, 100%);
-    width: 30%;
+    bottom: -5rem;
+    transform: translateY(100%);
+    width: 80%;
   }
 }
