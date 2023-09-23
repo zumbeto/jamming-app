@@ -159,6 +159,8 @@ function App() {
 
     const results = await searchTracks(query, accessToken);
     setTracks(results);
+
+    return results && results.length > 0; // Return true if there are results
   };
 
   // Function to request Spotify API for track search

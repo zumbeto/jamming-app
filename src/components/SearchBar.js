@@ -17,14 +17,23 @@ const SearchBar = ({ onSearch }) => {
     setQuery(value);
   };
 
-  const handleSubmit = (e) => {
+  // Function to handle the search form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (query.trim() && onSearch) {
-      onSearch(query);
+
+    // Call the onSearch prop if the query is not empty
+    if (query.trim()) {
+      const hasResults = await onSearch(query);
+      if (!hasResults) {
+        setSearchBarToastMessage(`No results found for "${query}".`);
+        setShowSearchBarToast(true);
+        setTimeout(() => {
+          setShowSearchBarToast(false);
+        }, 3000);
+      }
     } else {
       setSearchBarToastMessage('Please enter a search query.');
       setShowSearchBarToast(true);
-
       setTimeout(() => {
         setShowSearchBarToast(false);
       }, 3000);
