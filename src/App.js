@@ -5,7 +5,6 @@ import Container from './components/Container';
 import SearchResults from './components/SearchResults';
 import Playlist from './components/Playlist';
 import MobileNav from './components/MobileNav';
-import PlaylistToast from './components/PlaylistToast';
 
 function App() {
   // State variables to manage app's data and view
@@ -15,13 +14,12 @@ function App() {
   const [playlistName, setPlaylistName] = useState('New Playlist');
   const [playlistTracks, setPlaylistTracks] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [playlistToastMessage, setPlaylistToastMessage] = useState('');
-  const [showPlaylistToast, setShowPlaylistToast] = useState(false);
 
   // Spotify API configurations
   const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
   const REDIRECT_URI = 'http://localhost:3000';
   const SCOPES = 'user-read-private user-read-email playlist-modify-private playlist-modify-public';
+  const TOKEN_RENEWAL_BUFFER = 5 * 60 * 1000;
 
   // Construct authorization URL for Spotify
   const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=token&scope=${encodeURIComponent(
@@ -39,6 +37,20 @@ function App() {
         return initial;
       }, {});
   };
+
+  useEffect(() => {
+    // Check if we need to proactively renew the token
+    const tokenExpirationTime = localStorage.getItem('spotifyTokenExpirationTime');
+    if (tokenExpirationTime) {
+      const timeRemaining = Number(tokenExpirationTime) - new Date().getTime();
+      if (timeRemaining <= TOKEN_RENEWAL_BUFFER) {
+        // Time is within the buffer, renew the token
+        localStorage.removeItem('spotifyAccessToken');
+        localStorage.removeItem('spotifyTokenExpirationTime');
+        window.location = AUTH_URL;
+      }
+    }
+  }, [AUTH_URL, TOKEN_RENEWAL_BUFFER]);
 
   // Effect hook to handle Spotify authentication and token retrieval
   useEffect(() => {
@@ -124,30 +136,17 @@ function App() {
 
   // Function to save the playlist to Spotify
   const savePlaylistToSpotify = async () => {
-    if (!playlistName || playlistTracks.length === 0) {
-      setPlaylistToastMessage('Ensure you have a playlist name and tracks to save!');
-      setShowPlaylistToast(true);
-      setTimeout(() => setShowPlaylistToast(false), 3000);
-      return;
-    }
-
     try {
       const userId = await getUserId(accessToken);
       const playlistId = await createPlaylist(userId, playlistName, accessToken);
       const trackURIs = playlistTracks.map((track) => track.uri);
       await addTracksToPlaylist(userId, playlistId, trackURIs, accessToken);
-      setPlaylistToastMessage('Playlist saved to Spotify successfully!');
-      setShowPlaylistToast(true);
-      setTimeout(() => setShowPlaylistToast(false), 3000);
 
       // Reset the playlist name and tracks in the state
       setPlaylistName('New Playlist');
       setPlaylistTracks([]);
     } catch (error) {
       console.error('Error saving playlist to Spotify:', error);
-      setPlaylistToastMessage('Error saving playlist to Spotify. Please try again.');
-      setShowPlaylistToast(true);
-      setTimeout(() => setShowPlaylistToast(false), 3000);
     }
   };
 
@@ -219,10 +218,6 @@ function App() {
       <SearchBar onSearch={handleSearch} />
       <MobileNav setActiveView={setActiveView} />
       <Container>
-        <PlaylistToast
-          message={playlistToastMessage}
-          isVisible={showPlaylistToast}
-        />
         <SearchResults
           activeView={activeView}
           tracks={tracks}

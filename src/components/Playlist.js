@@ -1,12 +1,42 @@
-import './Playlist.module.css';
+import React, { useState } from 'react';
+import styles from './Playlist.module.css';
+import PlaylistToast from './PlaylistToast';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styles from './Playlist.module.css';
 
 library.add(faPlus, faMinus, faTimes);
 
 const Playlist = ({ activeView, name, tracks, onNameChange, onRemove, onSave, onClear }) => {
+  const [playlistToastMessage, setPlaylistToastMessage] = useState('');
+  const [showPlaylistToast, setShowPlaylistToast] = useState(false);
+
+  const handleSaveToSpotify = async () => {
+    if (!name || tracks.length === 0) {
+      // Check if the playlist has a name and tracks
+      if (!name) {
+        setPlaylistToastMessage('Please provide a name for your playlist!');
+      } else {
+        setPlaylistToastMessage('Your playlist is empty. Add some tracks!');
+      }
+      setShowPlaylistToast(true);
+      setTimeout(() => setShowPlaylistToast(false), 3000);
+      return;
+    }
+
+    await onSave();
+    setPlaylistToastMessage('Playlist saved to Spotify successfully!');
+    setShowPlaylistToast(true);
+    setTimeout(() => setShowPlaylistToast(false), 3000);
+  };
+
+  const handleClearPlaylist = () => {
+    onClear();
+    setPlaylistToastMessage('Playlist cleared!');
+    setShowPlaylistToast(true);
+    setTimeout(() => setShowPlaylistToast(false), 3000);
+  };
+
   return (
     <ul
       className={styles['playlist']}
@@ -54,17 +84,22 @@ const Playlist = ({ activeView, name, tracks, onNameChange, onRemove, onSave, on
       <div className={styles['playlist__buttons']}>
         <button
           className={styles['playlist__button']}
-          onClick={onSave}
+          onClick={handleSaveToSpotify}
         >
           Save to Spotify
         </button>
         <button
           className={styles['playlist__button']}
-          onClick={onClear}
+          onClick={handleClearPlaylist}
         >
           Clear Playlist
         </button>
       </div>
+
+      <PlaylistToast
+        message={playlistToastMessage}
+        isVisible={showPlaylistToast}
+      />
     </ul>
   );
 };

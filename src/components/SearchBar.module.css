@@ -30,7 +30,7 @@
 .search-clear-icon {
   position: absolute;
   right: 1.2rem;
-  top: 1.7rem;
+  top: 1rem;
   width: 1.8rem;
   height: 1.8rem;
   color: #a1a1a1;
@@ -40,6 +40,12 @@
 
 .search-clear-icon:hover {
   transform: scale(1.2);
+}
+
+@media screen and (min-width: 768px) {
+  .search-clear-icon {
+    top: 1.6rem;
+  }
 }
 
 .search-bar {
@@ -102,9 +108,4 @@
 
 .search-bar__btn:hover {
   background-color: #9e3e0b;
-}
-
-.search-bar__btn:disabled:hover {
-  cursor: not-allowed;
-  opacity: 0.5;
 }
