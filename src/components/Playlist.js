@@ -1,12 +1,12 @@
 import './Playlist.module.css';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPlus, faMinus, faMusic } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './Playlist.module.css';
 
-library.add(faPlus, faMinus, faMusic);
+library.add(faPlus, faMinus, faTimes);
 
-const Playlist = ({ activeView, name, tracks, onNameChange, onRemove }) => {
+const Playlist = ({ activeView, name, tracks, onNameChange, onRemove, onSave, onClear }) => {
   return (
     <ul
       className={styles['playlist']}
@@ -20,6 +20,13 @@ const Playlist = ({ activeView, name, tracks, onNameChange, onRemove }) => {
           onChange={(e) => onNameChange(e.target.value)}
           className={styles['playlist__input__text']}
         />
+        {name && (
+          <FontAwesomeIcon
+            icon='times'
+            className={styles['playlist-clear-icon']}
+            onClick={() => onNameChange('')}
+          />
+        )}
       </div>
       {tracks.map((track) => (
         <li
@@ -44,7 +51,20 @@ const Playlist = ({ activeView, name, tracks, onNameChange, onRemove }) => {
           />
         </li>
       ))}
-      <button className={styles['playlist__button']}>Save to Spotify</button>
+      <div className={styles['playlist__buttons']}>
+        <button
+          className={styles['playlist__button']}
+          onClick={onSave}
+        >
+          Save to Spotify
+        </button>
+        <button
+          className={styles['playlist__button']}
+          onClick={onClear}
+        >
+          Clear Playlist
+        </button>
+      </div>
     </ul>
   );
 };

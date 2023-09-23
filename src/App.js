@@ -5,6 +5,7 @@ import Container from './components/Container';
 import SearchResults from './components/SearchResults';
 import Playlist from './components/Playlist';
 import MobileNav from './components/MobileNav';
+import PlaylistToast from './components/PlaylistToast';
 
 function App() {
   // State variables to manage app's data and view
@@ -14,6 +15,8 @@ function App() {
   const [playlistName, setPlaylistName] = useState('New Playlist');
   const [playlistTracks, setPlaylistTracks] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [playlistToastMessage, setPlaylistToastMessage] = useState('');
+  const [showPlaylistToast, setShowPlaylistToast] = useState(false);
 
   // Spotify API configurations
   const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
@@ -71,9 +74,89 @@ function App() {
     }
   }, [isAuthenticated, AUTH_URL]);
 
+  // Function to get the user ID from Spotify
+  const getUserId = async (token) => {
+    const response = await fetch('https://api.spotify.com/v1/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+    return data.id;
+  };
+
+  // Function to create a new playlist on Spotify
+  const createPlaylist = async (userId, playlistName, token) => {
+    const response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: playlistName,
+      }),
+    });
+
+    const data = await response.json();
+    return data.id;
+  };
+
+  // Function to clear the playlist
+  const clearPlaylist = () => {
+    setPlaylistTracks([]);
+  };
+
+  // Function to add tracks to a playlist on Spotify
+  const addTracksToPlaylist = async (userId, playlistId, trackURIs, token) => {
+    await fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uris: trackURIs,
+      }),
+    });
+  };
+
+  // Function to save the playlist to Spotify
+  const savePlaylistToSpotify = async () => {
+    if (!playlistName || playlistTracks.length === 0) {
+      setPlaylistToastMessage('Ensure you have a playlist name and tracks to save!');
+      setShowPlaylistToast(true);
+      setTimeout(() => setShowPlaylistToast(false), 3000);
+      return;
+    }
+
+    try {
+      const userId = await getUserId(accessToken);
+      const playlistId = await createPlaylist(userId, playlistName, accessToken);
+      const trackURIs = playlistTracks.map((track) => track.uri);
+      await addTracksToPlaylist(userId, playlistId, trackURIs, accessToken);
+      setPlaylistToastMessage('Playlist saved to Spotify successfully!');
+      setShowPlaylistToast(true);
+      setTimeout(() => setShowPlaylistToast(false), 3000);
+
+      // Reset the playlist name and tracks in the state
+      setPlaylistName('New Playlist');
+      setPlaylistTracks([]);
+    } catch (error) {
+      console.error('Error saving playlist to Spotify:', error);
+      setPlaylistToastMessage('Error saving playlist to Spotify. Please try again.');
+      setShowPlaylistToast(true);
+      setTimeout(() => setShowPlaylistToast(false), 3000);
+    }
+  };
+
   // Function to handle track search
   const handleSearch = async (query) => {
-    if (!accessToken) return;
+    if (!accessToken || !isTokenValid()) {
+      // If the token is not set or not valid, return early
+      return;
+    }
 
     const results = await searchTracks(query, accessToken);
     setTracks(results);
@@ -87,8 +170,30 @@ function App() {
       },
     });
 
+    // Check if the response status is 401 (Unauthorized)
+    if (response.status === 401) {
+      // Clear local storage and redirect to Spotify for re-authentication
+      localStorage.removeItem('spotifyAccessToken');
+      localStorage.removeItem('spotifyTokenExpirationTime');
+      window.location = AUTH_URL;
+      return [];
+    }
+
     const data = await response.json();
-    return data.tracks.items;
+
+    // Ensure that 'data.tracks' exists before trying to access 'items'
+    if (data.tracks) {
+      return data.tracks.items;
+    } else {
+      console.error('Unexpected response from Spotify:', data);
+      return [];
+    }
+  };
+
+  // Function to check if the token is valid
+  const isTokenValid = () => {
+    const tokenExpirationTime = localStorage.getItem('spotifyTokenExpirationTime');
+    return new Date().getTime() < Number(tokenExpirationTime);
   };
 
   // Function to add a track to the playlist
@@ -114,10 +219,15 @@ function App() {
       <SearchBar onSearch={handleSearch} />
       <MobileNav setActiveView={setActiveView} />
       <Container>
+        <PlaylistToast
+          message={playlistToastMessage}
+          isVisible={showPlaylistToast}
+        />
         <SearchResults
           activeView={activeView}
           tracks={tracks}
           onAdd={addToPlaylist}
+          playlistTracks={playlistTracks}
         />
         <Playlist
           activeView={activeView}
@@ -125,6 +235,8 @@ function App() {
           tracks={playlistTracks}
           onRemove={removeFromPlaylist}
           onNameChange={updatePlaylistName}
+          onSave={savePlaylistToSpotify}
+          onClear={clearPlaylist}
         />
       </Container>
     </div>
