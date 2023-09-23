@@ -66,8 +66,8 @@
   background-color: #c94c09;
   color: #fff;
   cursor: pointer;
-  margin-top: 4rem;
-  font-size: 1.8rem;
+  margin-top: 2rem;
+  font-size: 1.4rem;
   font-weight: 600;
   letter-spacing: 1px;
   transition: all 0.2s ease-in-out;
@@ -75,8 +75,10 @@
 
 @media screen and (min-width: 768px) {
   .search-bar__btn {
-    width: 17rem;
-    height: 5.5rem;
+    width: 16rem;
+    height: 5rem;
+    font-size: 1.6rem;
+    margin-top: 4rem;
   }
 }
 

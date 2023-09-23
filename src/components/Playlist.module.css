@@ -153,20 +153,28 @@
 }
 
 .playlist__button {
-  width: 17rem;
-  height: 6rem;
+  width: 15rem;
+  height: 5rem;
   border: none;
   border-radius: 5rem;
   background-color: #c94c09;
   color: #fff;
   cursor: pointer;
   margin: 2rem auto;
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   font-weight: 600;
   letter-spacing: 1px;
   transition: all 0.2s ease-in-out;
 }
 
-.playlist__button:hover {
-  background-color: #a13e07;
+@media screen and (min-width: 768px) {
+  .playlist__button {
+    width: 17rem;
+    height: 5rem;
+    font-size: 1.6rem;
+  }
+
+  .playlist__button:hover {
+    background-color: #a13e07;
+  }
 }

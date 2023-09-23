@@ -5,6 +5,7 @@ import Container from './components/Container';
 import SearchResults from './components/SearchResults';
 import Playlist from './components/Playlist';
 import MobileNav from './components/MobileNav';
+import PlaylistToast from './components/PlaylistToast';
 
 function App() {
   // State variables to manage app's data and view
@@ -14,6 +15,8 @@ function App() {
   const [playlistName, setPlaylistName] = useState('New Playlist');
   const [playlistTracks, setPlaylistTracks] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
 
   // Spotify API configurations
   const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
@@ -117,7 +120,9 @@ function App() {
   // Function to save the playlist to Spotify
   const savePlaylistToSpotify = async () => {
     if (!playlistName || playlistTracks.length === 0) {
-      alert('Ensure you have a playlist name and tracks to save!');
+      setToastMessage('Ensure you have a playlist name and tracks to save!');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
       return;
     }
 
@@ -126,14 +131,18 @@ function App() {
       const playlistId = await createPlaylist(userId, playlistName, accessToken);
       const trackURIs = playlistTracks.map((track) => track.uri);
       await addTracksToPlaylist(userId, playlistId, trackURIs, accessToken);
-      alert('Playlist saved to Spotify successfully!');
+      setToastMessage('Playlist saved to Spotify successfully!');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
 
       // Reset the playlist name and tracks in the state
       setPlaylistName('New Playlist');
       setPlaylistTracks([]);
     } catch (error) {
       console.error('Error saving playlist to Spotify:', error);
-      alert('Error saving playlist to Spotify. Please try again.');
+      setToastMessage('Error saving playlist to Spotify. Please try again.');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
     }
   };
 
@@ -205,6 +214,10 @@ function App() {
       <SearchBar onSearch={handleSearch} />
       <MobileNav setActiveView={setActiveView} />
       <Container>
+        <PlaylistToast
+          message={toastMessage}
+          isVisible={showToast}
+        />
         <SearchResults
           activeView={activeView}
           tracks={tracks}
