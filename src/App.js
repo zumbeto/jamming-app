@@ -11,8 +11,12 @@ function App() {
   const [activeView, setActiveView] = useState('results');
   const [accessToken, setAccessToken] = useState('');
   const [tracks, setTracks] = useState([]);
-  const [playlistName, setPlaylistName] = useState('New Playlist');
-  const [playlistTracks, setPlaylistTracks] = useState([]);
+  const [playlistName, setPlaylistName] = useState(
+    () => localStorage.getItem('jammmingPlaylistName') || 'New Playlist'
+  );
+  const [playlistTracks, setPlaylistTracks] = useState(
+    () => JSON.parse(localStorage.getItem('jammmingPlaylist')) || []
+  );
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Spotify API configurations
@@ -142,6 +146,10 @@ function App() {
       const trackURIs = playlistTracks.map((track) => track.uri);
       await addTracksToPlaylist(userId, playlistId, trackURIs, accessToken);
 
+      // Clear the playlist from local storage
+      localStorage.removeItem('jammmingPlaylist');
+      localStorage.removeItem('jammmingPlaylistName');
+
       // Reset the playlist name and tracks in the state
       setPlaylistName('New Playlist');
       setPlaylistTracks([]);
@@ -196,6 +204,12 @@ function App() {
     const tokenExpirationTime = localStorage.getItem('spotifyTokenExpirationTime');
     return new Date().getTime() < Number(tokenExpirationTime);
   };
+
+  // Effect hook to save the playlist to local storage on change
+  useEffect(() => {
+    localStorage.setItem('jammmingPlaylist', JSON.stringify(playlistTracks));
+    localStorage.setItem('jammmingPlaylistName', playlistName);
+  }, [playlistTracks, playlistName]);
 
   // Function to add a track to the playlist
   const addToPlaylist = (track) => {
