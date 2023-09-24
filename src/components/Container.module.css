@@ -1,17 +1,18 @@
 .container {
   position: relative;
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   flex-wrap: wrap;
-  justify-content: space-between;
   align-items: flex-start;
+  justify-content: space-evenly;
   margin: 0 auto;
   max-width: 140rem;
   padding: 0 1rem 7rem 1rem;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 960px) {
   .container {
     padding: 0 2rem 7rem 2rem;
+    gap: 6rem;
   }
 }

@@ -7,7 +7,7 @@
   box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 960px) {
   .results {
     display: none;
   }
@@ -17,7 +17,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 960px) {
   .results {
     width: 50%;
     margin-top: 5rem;

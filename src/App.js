@@ -22,7 +22,8 @@ function App() {
   // Spotify API configurations
   const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
   const REDIRECT_URI = process.env.REACT_APP_SPOTIFY_REDIRECT_URI;
-  const SCOPES = 'user-read-private user-read-email playlist-modify-private playlist-modify-public';
+  const SCOPES =
+    'user-read-private user-read-email playlist-modify-private playlist-modify-public playlist-read-private';
   const TOKEN_RENEWAL_BUFFER = 5 * 60 * 1000;
 
   // Construct authorization URL for Spotify
@@ -88,7 +89,7 @@ function App() {
         window.location = AUTH_URL;
       }
     }
-  }, [isAuthenticated, AUTH_URL]);
+  }, [isAuthenticated, AUTH_URL, accessToken]);
 
   // Function to get the user ID from Spotify
   const getUserId = async (token) => {
