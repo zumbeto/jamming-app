@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import LogoBar from './components/LogoBar';
 import SearchBar from './components/SearchBar';
 import Container from './components/Container';
 import SearchResults from './components/SearchResults';
 import Playlist from './components/Playlist';
 import MobileNav from './components/MobileNav';
+import ScrollToTopBtn from './components/ScrollToTopBtn';
+import styles from './App.module.css';
 
 function App() {
   // State variables to manage app's data and view
   const [activeView, setActiveView] = useState('results');
   const [accessToken, setAccessToken] = useState('');
   const [tracks, setTracks] = useState([]);
+  const [showScrollTopButton, setShowScrollTopButton] = useState(false);
   const [playlistName, setPlaylistName] = useState(
     () => localStorage.getItem('jammmingPlaylistName') || 'New Playlist'
   );
@@ -18,6 +21,8 @@ function App() {
     () => JSON.parse(localStorage.getItem('jammmingPlaylist')) || []
   );
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const appRef = useRef(null);
 
   // Spotify API configurations
   const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
@@ -174,7 +179,7 @@ function App() {
 
   // Function to request Spotify API for track search
   const searchTracks = async (query, token) => {
-    const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=20`, {
+    const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=50`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -215,7 +220,11 @@ function App() {
   // Function to add a track to the playlist
   const addToPlaylist = (track) => {
     if (!playlistTracks.find((savedTrack) => savedTrack.id === track.id)) {
-      setPlaylistTracks([...playlistTracks, track]);
+      setTimeout(() => setPlaylistTracks((prevTracks) => [...prevTracks, track]), 1500);
+
+      setTimeout(() => {
+        setTracks((prevTracks) => prevTracks.filter((t) => t.id !== track.id));
+      }, 1500);
     }
   };
 
@@ -229,8 +238,34 @@ function App() {
     setPlaylistName(name);
   };
 
+  // Effect hook to show/hide the scroll to top button
+  useEffect(() => {
+    const currentAppRef = appRef.current;
+
+    const checkScrollPosition = () => {
+      if (currentAppRef.scrollTop > 500) {
+        setShowScrollTopButton(true);
+      } else {
+        setShowScrollTopButton(false);
+      }
+    };
+
+    currentAppRef.addEventListener('scroll', checkScrollPosition);
+
+    return () => {
+      currentAppRef.removeEventListener('scroll', checkScrollPosition);
+    };
+  }, [showScrollTopButton]);
+
+  const scrollToTop = () => {
+    appRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div className='App'>
+    <div
+      className={styles.App}
+      ref={appRef}
+    >
       <LogoBar />
       <SearchBar onSearch={handleSearch} />
       <MobileNav setActiveView={setActiveView} />
@@ -251,6 +286,10 @@ function App() {
           onClear={clearPlaylist}
         />
       </Container>
+      <ScrollToTopBtn
+        scrollToTop={scrollToTop}
+        showScrollTopButton={showScrollTopButton}
+      />
     </div>
   );
 }

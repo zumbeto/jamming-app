@@ -1,0 +1,54 @@
+.btn {
+  position: fixed;
+  bottom: 5rem;
+  right: 48%;
+  transform: translate(-50%, 50%);
+  font-size: 2.2rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  animation: bounce 1s infinite ease-in;
+  background-color: #c94c09;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 0.3rem 0.5rem 0 0.5rem;
+}
+
+@media screen and (min-width: 960px) {
+  .btn {
+    right: 5%;
+    font-size: 3rem;
+  }
+}
+
+.btn:hover {
+  background-color: #9e3e0b;
+}
+
+.btn:active {
+  background-color: #c94c09;
+}
+
+.btn:visited {
+  background-color: #c94c09;
+}
+
+.btn.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* animations */
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
