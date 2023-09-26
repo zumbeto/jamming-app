@@ -58,6 +58,20 @@ const Playlist = ({ activeView, name, tracks, onNameChange, onRemove, onSave, on
           />
         )}
       </div>
+      <div className={styles['playlist__buttons']}>
+        <button
+          className={styles['playlist__button']}
+          onClick={handleSaveToSpotify}
+        >
+          Save to Spotify
+        </button>
+        <button
+          className={styles['playlist__button']}
+          onClick={handleClearPlaylist}
+        >
+          Clear Playlist
+        </button>
+      </div>
       {tracks.map((track) => (
         <li
           key={track.id}
@@ -81,20 +95,6 @@ const Playlist = ({ activeView, name, tracks, onNameChange, onRemove, onSave, on
           />
         </li>
       ))}
-      <div className={styles['playlist__buttons']}>
-        <button
-          className={styles['playlist__button']}
-          onClick={handleSaveToSpotify}
-        >
-          Save to Spotify
-        </button>
-        <button
-          className={styles['playlist__button']}
-          onClick={handleClearPlaylist}
-        >
-          Clear Playlist
-        </button>
-      </div>
 
       <PlaylistToast
         message={playlistToastMessage}

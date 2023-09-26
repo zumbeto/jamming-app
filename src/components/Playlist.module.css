@@ -181,6 +181,8 @@
   flex-direction: row;
   align-items: center;
   gap: 2rem;
+  border-bottom: 1px solid rgba(201, 76, 9, 0.4);
+  margin-bottom: 1rem;
 }
 
 @media screen and (min-width: 768px) {
